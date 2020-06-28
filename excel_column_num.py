@@ -12,10 +12,7 @@ def excel_column_to_number(column):
 
 excel_column_to_number('AAA')
 
-    # return columnd=
-
-
-
+# New line to test git
 
 # %%
 def Number(C):
