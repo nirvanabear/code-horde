@@ -34,20 +34,20 @@ New comment for git push testing
 '''
 
 
-def isPalindrome( self ):
+def isPalindrome(words):
 
     front = 0
     rear = -1
     while front < len(words) and rear >= -len(words):
         # print(words[front])
         while not words[front].isalpha():
-            print("skip: " + words[front])
+            # print("skip: " + words[front])
             front += 1
         while not words[rear].isalpha():
-            print("skip: " + words[rear])
+            # print("skip: " + words[rear])
             rear -= 1
         if words[front].lower() != words[rear].lower():
-            print("front: " + words[front] + ", rear: " + words[rear]) 
+            # print("front: " + words[front] + ", rear: " + words[rear]) 
             return 0
         front += 1
         rear -= 1
@@ -57,5 +57,6 @@ test1 = "A man, a plan, a canal, Panama."
 test2 = "hello"
 test3 = "A nut for a jar of tuna."
 test4 = 'Are we not pure? "No, sir!" Panama\'s moody Noriega brags. "It is garbage!" Irony dooms a man; a prisoner up to new era.'
+
 print(isPalindrome(test4))
   
