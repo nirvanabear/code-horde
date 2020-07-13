@@ -68,10 +68,10 @@ def merge_sort(nums):
         pivot = len(nums) // 2
         half1 = nums[:pivot]
         half2 = nums[pivot:] 
-        print("push: " + str(half1) + ", " + str(half2))
+        # print("push: " + str(half1) + ", " + str(half2))
         half1 = merge_sort(half1)
         half2 = merge_sort(half2)
-        print("pop: " + str(half1) + ", " + str(half2))
+        # print("pop: " + str(half1) + ", " + str(half2))
         temp_array = merge(half1, half2)
 
         return temp_array
@@ -103,5 +103,5 @@ def merge(half1, half2):
         
     return temp_array
 
-array = [1,2,8,4,5,6]
+array = [1,2,8,7,34,6,3,65,2456,645,345,4,23,5,234,56,7,23,4,5,6]
 print(merge_sort(array))
