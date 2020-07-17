@@ -73,6 +73,7 @@ def merge_sort(nums):
 # iterative version:
 
 def merge_sort(nums):
+    # initial formatting of individual integers into a stack of lists
     stack1 = []
     for each in nums:
         initial = []
@@ -80,6 +81,7 @@ def merge_sort(nums):
         stack1.append(initial)
     stack2 = []
 
+    # pop off a pair of elements, merge, and push onto the other stack
     while not (len(stack1) == 1 and len(stack2) == 0):
         while len(stack1) > 1:
             half1 = stack1.pop()
@@ -91,7 +93,7 @@ def merge_sort(nums):
             half2 = stack2.pop()
             merged_list = merge(half1, half2)
             stack1.append(merged_list)
-        print("stack2: " + str(stack2))
+        # print("stack2: " + str(stack2))
         while len(stack2) > 1:
             half1 = stack2.pop()
             half2 = stack2.pop()
@@ -105,14 +107,15 @@ def merge_sort(nums):
         if len(stack2) == 1 and len(stack1) == 0:
             last = stack2.pop()
             stack1.append(last)
-        print("stack1: " + str(stack1))
+        # print("stack1: " + str(stack1))
         
     
-    print(stack1)
-    print("stack1 length: " + str(len(stack1)))
-    print(stack2)
-    print("stack2 length: " + str(len(stack2)))
+    # print(stack1)
+    # print("stack1 length: " + str(len(stack1)))
+    # print(stack2)
+    # print("stack2 length: " + str(len(stack2)))
 
+    # change list of lists into a simple list
     if len(stack1) > 0:
         finished_sort = stack1
     else:
@@ -124,21 +127,18 @@ def merge_sort(nums):
 
 
 def merge(half1, half2):
+    # perform mergeSort operation on two lists
     i = 0
     j = 0
     temp_array = []
-    # Start here: 
-    # Never mind that you don't know where halves come from
     while i < len(half1) and j < len(half2):
         if half1[i] <= half2[j]:
             # add half1[i] to temp_array
             temp_array.append(half1[i])
-            # i++
             i += 1
         else:
             # add half2[j] to temp_array
             temp_array.append(half2[j])
-            # j++
             j += 1
     # add rest of array where i or j is less than len to temp_array
     if i == len(half1):
