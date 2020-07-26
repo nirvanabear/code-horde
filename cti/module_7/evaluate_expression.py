@@ -73,22 +73,20 @@ return operands[0]
 
 '''
 
+
 def evaluate_expression(expression):
     operands = []
     op_dict = {"+": (lambda x,y: x+y), 
                "-": (lambda x,y: x-y), 
                "*": (lambda x,y: x*y), 
                "/": (lambda x,y: x//y)}
-    # while len(numbers) < 2:
     for element in expression:
         if element.isnumeric():
             operands.append(int(element))
         else:
             b = operands.pop()
             a = operands.pop()
-            # a,b = operands
             solution = op_dict[element](a,b)
-            # operands.clear()
             operands.append(solution)
     return operands[0]
 

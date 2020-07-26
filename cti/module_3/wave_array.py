@@ -17,7 +17,7 @@ Another possible answer : [4, 1, 3, 2]
 
 ** pseudocode **
 
-    sort(integers)
+    sorted(integers)
     counter = 0
     while counter < len(array):
         swap(integers, counter, counter + 1)
