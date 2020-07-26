@@ -109,29 +109,13 @@ Diff is 754 characters long. Set self.maxDiff to None to see it.
 import re
 
 def bigram_frequency_analyzer(text):
-    # make a dict for {sequence : [following (count), ...]}
+
+    # make a dict for {two-word-sequence : [following (count), ...]}
     phrase_dict = {}
-    # break up text into a list of words, w/ punctuation and spaces attached
-    text_list = re.findall(r'\S+\s+|\S+', text)
-    # substitutes /n with a space
-    for n in range(len(text_list)):
-        text_list[n] = re.sub('\n', ' ', text_list[n])
-    # print(text_list)
-    # for each word in text, except for the last two
-        # since they won't have a following word
-    for p in range(len(text_list) - 2):
-        # take the word and next word in sequence
-        phrase = text_list[p] + text_list[p+1]
-        if phrase not in phrase_dict:
-            phrase_dict[phrase] = dict()
-            # for each matched instance of that sequence in text,
-            # store in a sub-dictionary with counts
-            for q in range(len(text_list) - 2):
-                if phrase == text_list[q] + text_list[q+1]:
-                    if text_list[q+2] not in phrase_dict[phrase]:
-                        phrase_dict[phrase][text_list[q+2]] = 1
-                    else:
-                        phrase_dict[phrase][text_list[q+2]] += 1
+    text_list = []
+
+    text_to_list(text, text_list)
+    third_word_counts(text_list, phrase_dict)
 
     frequency = ""
     for each in phrase_dict:
@@ -139,10 +123,41 @@ def bigram_frequency_analyzer(text):
         for every in phrase_dict[each]:
             line = line + every + "(" + str(phrase_dict[each][every]) + ") "
         frequency = frequency + line + "\n"
+
     return frequency
 
 
+# for each word in text, except for the last two
+# since they won't have a following word
+def text_to_list(text, text_list):
 
+    # break up text into a list of words, w/ punctuation and spaces attached
+    for each in re.findall(r'\S+\s+|\S+', text):
+        text_list.append(each)
+    # substitutes /n with a space
+    for n in range(len(text_list)):
+        text_list[n] = re.sub('\n', ' ', text_list[n])
+
+    return text_list
+
+
+def third_word_counts(text_list, phrase_dict):
+
+    for p in range(len(text_list) - 2):
+        # take the word and next word in sequence
+        phrase = text_list[p] + text_list[p+1]
+        if phrase not in phrase_dict:
+            phrase_dict[phrase] = dict()
+            # for each matched instance of that sequence in text,
+            # store in a sub-dictionary, with counts
+            for q in range(len(text_list) - 2):
+                if phrase == text_list[q] + text_list[q+1]:
+                    if text_list[q+2] not in phrase_dict[phrase]:
+                        phrase_dict[phrase][text_list[q+2]] = 1
+                    else:
+                        phrase_dict[phrase][text_list[q+2]] += 1
+
+    return phrase_dict
 
 
 
