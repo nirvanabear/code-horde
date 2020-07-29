@@ -47,21 +47,35 @@ users = [
 ]
 
 
+
+** scratch paper **
+
+See module_8 Jupyter notebook.
+
+
+
 ** pseudocode **
 
 
 create list of {users : favorite_genre}
 for each user:
+
     create a list of their { movies : score }
+
+    # create_genre_counts()
     make an empty {genre : [total, counts]} list
     for each {movies : score}:
         find movie genre
         add movie score to total for that genre
         tally counts of scores for that genre
         add to {genre : [total, counts]}
+
+    # calculate_average()
     for each {genre : [total, counts]}:
         average = total / counts
         add to {genre : [total, counts, average]}
+
+    # create_favorite_list()
     create largest_average = {genre : average}
     for each average:
         if larger than largest_average, reassign variable
@@ -74,49 +88,96 @@ for each user:
 
 '''
 
-from collections import Counter
 
 def favorite_genres(users, movies, movie_ratings):
-
+    '''
+    Make a list of favorite movie genres from a list of users and
+    records of their ratings of some movies.
+    '''
     # create list of {users : favorite_genre}
     users_favorites = []
     # for each user:
     movies_length = len(movies)
     for user in users:
     #     create a list of their { movies : score }
-        users_movies = []
-        for movie in movie_ratings:
-            if user['id'] = movie['user_id']:
-                
-                ## TODO : THIS DICTIONARY MUST APPEAR IN FORMAT:
-                ## {'movie_id': 12345, 'rating': 100}
-                users_movies.append({movie['movie_id'] : movie['rating']})
 
-    #     make an empty {genre : [total, counts]} list
-        genre_scores = Counter()
-    #     for each {movies : score}:
-        for user_movie in users_movies:
-    #         find movie genre
-            found = False
-            index = 0
-            while not found or index == movies_length:
-                if movies[index]['id'] == user_movie['movie_id']
-                    genre = movies[index]['genre']
-                    found = True
+        users_ratings = create_users_ratings(user, movie_ratings)
+        genre_scores = aggregate_users_ratings(users_ratings, movies)
+        favorite = find_favorite(genre_scores)
+        append_favorite(user, favorite, users_favorites)
+
+    return users_favorites
+
+
+
+
+
+def create_users_ratings(user, movie_ratings):
+    '''Return a dictionary with a particular user's movie ratings.'''
+    users_movies = {}
+    for movie in movie_ratings:
+        # print(user['id'])
+        # print(movie)
+        # print(type(movie))
+        # print(movie['user_id'])
+        if user['id'] == movie['user_id']:
+            if movie['movie_id'] not in users_movies:
+                users_movies[movie['movie_id']] = movie['rating']
+
+    return users_movies
+
+
+def aggregate_users_ratings(users_ratings, movies):
+    ''' 
+    Return a dictionary with genres as keys and a list with 
+    the sum and counts of the ratings.
+    '''
+    movies_length = len(movies)
+    # print(movies_length)
+    genre_scores = {}
+    for key in users_ratings:
+        # print(key)
+        found = False
+        index = 0
+        while not found and index < movies_length:
+            if key == movies[index]['id']:
+                found = True
+                # print(found)
+                # print(key)
+                if movies[index]['genre'] not in genre_scores:
+                    genre_scores[movies[index]['genre']] = [users_ratings[key], 1]
+                    # print(genre_scores)
                 else:
-                    index += 1
-            
-    #         add movie score to total for that genre
-            genre_scores[genre] += 
-    #         tally counts of scores for that genre
-    #         add to {genre : [total, counts]}
-    #     for each {genre : [total, counts]}:
-    #         average = total / counts
-    #         add to {genre : [total, counts, average]}
-    #     create largest_average = {genre : average}
-    #     for each average:
-    #         if larger than largest_average, reassign variable
-    #     save to {users : favorite_genre}
+                    genre_scores[movies[index]['genre']][0] += users_ratings[key]
+                    genre_scores[movies[index]['genre']][1] += 1
+            else:
+                index += 1
+                # print(found)
+    
+    return genre_scores
+
+
+def find_favorite(genre_scores):
+    '''Return the favorite genre of a user.'''
+    high_score = 0
+    favorite = ''
+    for key in genre_scores:
+        average = genre_scores[key][0] / genre_scores[key][1]
+        if average > high_score:
+            high_score = average
+            favorite = key
+
+    return favorite
+
+
+
+def append_favorite(user, favorite, users_favorites):
+    '''Append a dictionary with user id and favorite to a list.'''
+    high_score = 0
+    user_fave = {'id': user['id'], 'favorite_genre': favorite}
+    users_favorites.append(user_fave)
+
+
 
 
 
@@ -136,4 +197,4 @@ if __name__ == '__main__':
   }
 ]
 
-    favorite_genres(users, movies, movie_ratings)
+    print(favorite_genres(users, movies, movie_ratings))
