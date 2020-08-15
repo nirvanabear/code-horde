@@ -49,26 +49,34 @@ AssertionError: 2 != 10
 
 
 def single_number(nums):
+    '''Find the element which appears once but not thrice in an array.'''
+    # Accumulator list will eventually have an element for each bit.
+    binary_totals = []
 
-    nums[0] = int(bin(nums[0])[2:])
-    for index in range(1, len(nums)):
-        nums[index] = int(bin(nums[index])[2:]) + nums[index - 1]
-    # print(nums)
-    # print(bin(nums[-1]))
-    string_sum = str(nums[-1])
-    # print(string_sum)
+    # Loops through each number in the array, then loops backwards 
+    # through each bit in the binary version of the number and adds it 
+    # to the corresponding element in the accumulator.
+    for r in range(0, len(nums)):
+        string_binary = bin(nums[r])[2:] 
+        for s in range(len(string_binary) - 1, -1, -1):
+            # Appends another element, if accumulator is shorter than the
+            # binary number being processed.
+            if len(binary_totals) < len(string_binary) - s:
+                binary_totals.append(0)
+            binary_totals[len(string_binary) - 1 - s] += int(string_binary[s])
+
+    # Flips the array so totals of each bit read correctly right-to-left.
+    binary_totals.reverse()
     binary_result = "0b"
-    for digit in string_sum:
-        # print(each)
-        if int(digit) % 3 == 1:
-            # print(int(each) % 3 + 1)
+
+    # Concatinates the appropriate bit according to the 3n + 1 analysis.
+    for bitSum in binary_totals:
+        if int(bitSum) % 3 == 1:
             binary_result = binary_result + "1"
         else:
             binary_result = binary_result + "0"
-    # print(binary_result)
-    print(int(binary_result, 2))
-    single_answer = int(binary_result, 2)
-    return single_answer
+
+    return int(binary_result, 2)
 
 '''
 
@@ -129,6 +137,13 @@ if __name__ == "__main__":
     array2 = [1, 2, 3, 1, 10, 2, 3, 1, 2, 3]
     big_array = [1, 2, 3, 1, 2, 3, 1, 2, 3] * 5000
     big_array.append(20)
-    single_number(big_array)
+    mistake = [1,1,1,2,2,2,5,5,5,7,9,9,9]
+
+    ar = [numbers for numbers in range(2,100000)]*3
+    print(ar[99996:100008])
+    ar.append(1)
+    print(ar[-1])
+    
+    print(single_number(ar))
 
 
