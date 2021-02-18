@@ -98,3 +98,102 @@ def arrayFormationII(arr, pieces):
                                                 m += 1
                                                 n += 1
         return match
+
+
+
+'''
+#Problem:
+#You are given an array of distinct integers arr and an array of integer arrays pieces, where the integers in pieces are distinct. Your goal is to form arr by concatenating the arrays in pieces in any order. However, you are not allowed to reorder the integers in each array of pieces[i].
+
+#Return true if it is possible to form the array arr from pieces. otherwise, return false. 
+
+#Examples: 
+#arr = [85], pieces = [[85]] --> True
+#arr = [15,88], pieces = [[88],[15]] --> True
+#arr = [49,18,16], pieces = [[16,18,49]] --> False
+#arr = [91,4,64,78], pieces = [[78],[4,64],[91]] --> True
+#arr = [1,3,5,7], pieces = [[2,4,6,8]] --> false
+
+
+** pseudocode **
+
+for i in range(len(pieces)):
+        # match routine jumps back here
+        create sub-pieces index counter
+        create match equals true
+        while sub-pieces_index < length of sub-pieces and
+              match = True and
+              
+                for item in arr:
+                        if every == item:
+                                # start match check routine
+
+
+** pseudocode 2 **
+
+
+match = True
+# at all loops: while match remains true
+go through pieces
+        go through each sub-piece
+                go through arr:
+                        if sub-piece matches arr item:
+                                # check if all other elements match
+                                sub-piece index = spi + 1
+                                arr index = index + 1
+                                while sub-piece index < len(arr) and arr index < len(arr):
+                                        if sub-piece does not equal arr item:
+                                                match = False
+                                                exit all loops and end program
+                        if match still true:
+                                remove sub-pieces from arr
+
+
+
+
+
+'''
+
+
+def arrayFormation(arr, pieces):
+        """
+        :type arr: List[int]
+        :type pieces: List[List[int]]
+        :rtype: bool
+        """
+        match = True
+        i = 0
+        while match and i < len(pieces):
+                j = 0
+                while match and j < len(pieces[i]):
+                        k = 0
+                        while match and k < len(arr) and j < len(pieces[i]):
+                                # runs match routine
+                                if pieces[i][j] == arr[k]:
+                                        start = k
+                                        j += 1
+                                        k += 1
+                                        while match and k < len(arr) and j < len(pieces[i]):
+                                                if pieces[i][j] != arr[k]:
+                                                        match = False
+                                                else:
+                                                        j += 1
+                                                        k += 1
+                                        # prevents out-of-order True
+                                        if k >= len(arr) and j < len(pieces[i]):
+                                                match = False
+                                        # removes matched items
+                                        if match == True:
+                                                arr = arr[:start] + arr[k:]
+                                # prevents no-match True
+                                elif k == len(arr) - 1 and j < len(pieces[i]):
+                                        match = False
+                                else:
+                                        k += 1
+                        j += 1
+                i += 1
+        return match
+                            #arr = [91,4,64,78], pieces = [[78],[4,64],[91]] --> True            
+                        
+
+
