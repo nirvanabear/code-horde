@@ -12,22 +12,22 @@ Original Site:  https://www.interviewbit.com/problems/generate-all-parentheses/
 '''
 
 
-def valid(parentheses):
-    stack = []
-    paren_dic = {')':'(', '}':'{' , ']':'['}
-    for paren in parentheses:
-        if paren in ['(', '[', '{']:
-            stack.append(paren)
-        elif paren in [')', ']', '}']:
-            if paren_dic[paren] == stack[-1]:
-                stack.pop()
-            else: 
-                return 0
-    if len(stack) == 0:
-        return 1
-    else:
-        return 0
-            
+def valid(s):
+   stack = []
+   paren_dic = {')':'(', '}':'{' , ']':'['}
+   for paren in s:
+      if paren in ['(', '[', '{']:
+         stack.append(paren)
+      elif paren in [')', ']', '}']:
+         if stack and paren_dic[paren] == stack[-1]:
+            stack.pop()
+         else: 
+            return 0
+   if len(stack) == 0:
+      return 1
+   else:
+      return 0
+         
 
 
 
