@@ -37,21 +37,33 @@ int main()
 {
     int** ptrArray = createArray();
     printArray(ptrArray[0], ptrArray[1]);
+    
+    int largest_value;
+    int largest_index;
+    int swap_holder;       
+    int subarray_end = *ptrArray[1] - 1;
+
+    while (subarray_end > 0)
+    {
+        largest_value = ptrArray[0][0];
+        largest_index = 0;
+        for (int i=0; i<=subarray_end; i++)
+        {
+            if (ptrArray[0][i] > largest_value)
+            {
+                largest_value = ptrArray[0][i];
+                largest_index = i;
+            }
+        }
+        ptrArray[0][largest_index] = ptrArray[0][subarray_end];
+        ptrArray[0][subarray_end] = largest_value;
+        subarray_end--;
+    }
+
+    printArray(ptrArray[0], ptrArray[1]);
+
     delete [] ptrArray;
     ptrArray = nullptr;
-
-    // int largest_value;
-    // int largest_index;
-    // int swap_holder;
-    // int counter = 0;
-    // int subarray_end = **ptrArray[1];
-
-    // cout << "Element: " << subarray_end;
-
-    // while (subarray_end > 0)
-    // {
-    //     largest_value = *ptrArray[0][0];
-    // }
 
     return 0;
 }
@@ -61,7 +73,6 @@ int** createArray()
 {
     // Get array length from user.
     int* length = new int;
-    
     cout << "Length of array: " << endl;
     cin >> *length;
 
@@ -72,7 +83,6 @@ int** createArray()
     {
         cout << "Input an integer." << endl;
         cin >> input;           
-        // cout << "Your number: " << input << endl;
         array[j] = input;
     }
 
@@ -89,7 +99,7 @@ void printArray(int* array, int* length)
 {
     // Print an array.
     int i;
-    for (i=0; i<=*length-2; i++)
+    for (i=0; i<*length-1; i++)
     {
         cout << array[i] << ", ";
     }
@@ -100,30 +110,3 @@ void printArray(int* array, int* length)
 
 
 
-/* 
-*** Pointers ***
-NOTE:   * has so far been used for:
-    x * y					multiplication
-    int *ptr = nullptr;		definition of a pointer
-    *ptr = 100;				indirection operator
-
-◊ &array however, points to the entire array
-◊ array is a pointer that just points to the first element
-◊ &array + 1 points to the address increment of the whole array, plus one more entry
-◊ array + 1 just points to the second element, array[1]
-
-• Pointer variable	int	*ptr	Used to define a pointer
-• Address operator		&var	Used on the original variable to give access to it’s address
-• Indirection operator	*ptr	Used on a pointer to refer to the value
-• Initialization	
-
-§ Uses of &
-	int &ref = x;
-		¬ reference operator
-		¬ in a declaration (or as a parameter), it creates a reference variable
-		¬ ref is an alias for x
-	int *p = &x
-		¬ address operator
-		¬ p stores the address of x
-
-*/
