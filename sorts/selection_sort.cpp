@@ -31,36 +31,15 @@ while subarray_index > 0:
 using namespace std;
 
 int** createArray();
+int** sortSelection(int*, int*);
 void printArray(int*, int*);
+
 
 int main()
 {
     int** ptrArray = createArray();
     printArray(ptrArray[0], ptrArray[1]);
-    
-    int largest_value;
-    int largest_index;
-    int swap_holder;       
-    int subarray_end = *ptrArray[1] - 1;
-
-    while (subarray_end > 0)
-    {
-        largest_value = ptrArray[0][0];
-        largest_index = 0;
-        for (int i=0; i<=subarray_end; i++)
-        {
-            if (ptrArray[0][i] > largest_value)
-            {
-                largest_value = ptrArray[0][i];
-                largest_index = i;
-            }
-        }
-        ptrArray[0][largest_index] = ptrArray[0][subarray_end];
-        ptrArray[0][subarray_end] = largest_value;
-        subarray_end--;
-    }
-
-    printArray(ptrArray[0], ptrArray[1]);
+    int** sortedArray = sortSelection(ptrArray[0], ptrArray[1]);    printArray(sortedArray[0], sortedArray[1]);
 
     delete [] ptrArray;
     ptrArray = nullptr;
@@ -92,6 +71,42 @@ int** createArray()
     array_data[1] = length;
 
     return array_data;
+}
+
+
+int** sortSelection(int* array, int* length)
+{
+    int largest_value;
+    int largest_index;
+    int swap_holder;       
+    int subarray_end = *length - 1;
+
+    // Sorts through selection sort algorithm:
+    // Search array for largest, Move to the end,
+    // Repeat with the remainder of the array.
+    while (subarray_end > 0)
+    {
+        largest_value = array[0];
+        largest_index = 0;
+        for (int i=0; i<=subarray_end; i++)
+        {
+            if (array[i] > largest_value)
+            {
+                largest_value = array[i];
+                largest_index = i;
+            }
+        }
+        array[largest_index] = array[subarray_end];
+        array[subarray_end] = largest_value;
+        subarray_end--;
+    }
+
+    // Create array of arrays to return data.
+    int** array_data = new int*[2];
+    array_data[0] = array;
+    array_data[1] = length;
+
+    return array_data;    
 }
 
 
