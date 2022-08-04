@@ -25,10 +25,22 @@ Plan: 			Perform the steps, write them out, describe the process
             change comparison object during loop (copy item)
         return new list
 
-    Sort then use a stack Pseudocode
+    Sort then use a stack Pseudocode:
+        call list sort method to sort in-place
+        create a stack
+        Nope. The added step of creating a stack and pushing
+        to it makes no sense to me.
+
 
     Sort then merge in-place Pseudocode
-
+        sort
+        create counter
+        check if end of a is larger than start of b
+            check if end of a is larger than end of b
+                if yes, delete b
+            or else, change end a to equal end b
+            delete b
+            increment counter
 
 
 Implement: 	    Translate your plan to code
@@ -44,7 +56,7 @@ return [1,7],[8,10],[15,18].
 
 '''
 
-def naive_merge_pairs(pairs):
+def naive_merge_intervals(pairs):
     # print("start")
     i = 0
     while i < len(pairs):
@@ -73,11 +85,32 @@ def naive_merge_pairs(pairs):
         i +=1
     return pairs
 
+def sorted_merge_intervals(pairs):
+    pairs.sort()
+    i = 0
+    while i < len(pairs) - 1:
+        j = i + 1
+        # print("len: " + str(len(pairs)) + ", i: " + str(i) + ", j: " + str(j))
+        if pairs[i][1] > pairs[j][0]:
+            if pairs[i][1] > pairs[j][1]:
+                del pairs[j]
+            else:
+                pairs[i][1] = pairs[j][1]
+                del pairs[j]
+        i += 1
+    return pairs
 
     
 
 
 if __name__ == "__main__":
-    print(naive_merge_pairs([[1,3],[2,5],[2,4],[7,9],[6,8]]))
-    print(naive_merge_pairs([[1,3],[2,6],[8,10],[5,7],[15,18]]))
+    laurene = [[1,3],[2,5],[2,4],[7,9],[6,8]]
+    camille = [[1,3],[2,6],[8,10],[5,7],[15,18]]
+    # print(naive_merge_pairs(laurene))
+    # print(naive_merge_pairs(camille))
 
+    # marion = [[1,3],[2,5],[2,4],[7,9],[6,8]]
+    # marion.sort()
+    # print(marion)
+
+    print(sorted_merge_intervals(laurene))
