@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -45,10 +46,11 @@ Evaluate: 		Determine time & space efficiency of solution
 */
 
 //Function prototype
-int dealer();
+int dealer(int&);
 unsigned long long int inputToInt(int&);
+string requestCard();
 
-const int MAXVALUE = 10;
+const int MAXVALUE = 13;
 const int MINVALUE = 1;
 
 int main() {
@@ -62,25 +64,41 @@ int main() {
     else
         srand(seed);
 
-
     
     int total = 0;
     int firstCard;
     int currentCard;
 
-    firstCard = dealer();
-    currentCard = dealer();
-    total = firstCard + currentCard;
+    firstCard = dealer(total);
+    currentCard = dealer(total);
     
     printf("First cards: %d, %d\n", firstCard, currentCard);
     printf("Total: %d\n", total);
 
-    // do {
-    //     printf("Do you want another card? (y/n): ");
+    string deal;
+    int counter = 0;
+    do {
+        if (counter) {
+            currentCard = dealer(total);
+            printf("Card: %d\n", currentCard);
+            printf("Total: %d\n", total);
+        }
 
-    // }
-    // while()
+        if (total == 21) {
+            cout << "Congratulations!" << endl;
+            break;
+        }
+        else if (total > 21) {
+            cout << "Bust!" << endl;
+            break;
+        }
 
+        deal = requestCard();
+        counter++;
+    }
+    while(deal == "y" || deal == "Y");
+
+    cout << "Game Over" << endl;
 
     return 0;
 
@@ -89,17 +107,16 @@ int main() {
 
 
 
-int dealer() {
-    return (rand() % (MAXVALUE - MINVALUE + 1)) + MINVALUE;
-}
+
 
 
 unsigned long long int inputToInt(int &nullString) {
 
     unsigned long long int output = 0;
     string userStr = "";
+    nullString = 0;
 
-    printf("Input one of the following options:\n\t• Input integer for seeded randomizer (19-digit max)\n\t• Press [enter] for non-deterministic randomizer: ");    
+    printf("Input one of the following options:\n\t• Input integer for seeded randomizer (19-digit max)\n\t• Press [enter] for non-deterministic randomizer\nInput: ");    
 
     for (;;){
 
@@ -128,6 +145,46 @@ unsigned long long int inputToInt(int &nullString) {
             }  
         } 
     }
-    output = stoull(userStr, nullptr, 10);
+
+    char* userCstr = nullptr;
+    userCstr = new char[userStr.size() + 1];
+    strcpy(userCstr, userStr.c_str());
+    output = strtoull(userCstr, nullptr, 10); //Never throws exceptions
+    delete [] userCstr;
+
     return output;
 }
+
+
+int dealer(int &total) {
+    int newCard;
+    int maxCard = 0;
+    // Requires g++ -std=c++11 a2_sndbx.cpp
+    map<int, int> deck = {{1,0}, {2,0}, {3,0}, {4,0}, {5,0}, {6,0}, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12,0}, {13,0}};
+    do {
+        newCard = (rand() % (MAXVALUE - MINVALUE + 1)) + MINVALUE;
+        if (deck[newCard] > 4)
+            maxCard = 1;
+    } while(maxCard == 0);
+    total += newCard;
+    return newCard;
+}
+
+
+string requestCard() {
+    string deal;
+    int valid = 0;
+    while (valid == 0) {
+        printf("Do you want another card? (y/n): ");
+        cin >> deal;
+        if (deal[0] == 'y' || deal[0] == 'Y' || deal[0] =='N' || deal[0] == 'n') {
+            if (deal.size() == 1)
+                valid = 1;
+            }
+        if (deal == "n")
+            break;
+    }
+    return deal;
+}
+
+
