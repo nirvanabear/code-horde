@@ -1,8 +1,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <ios>
-#include <limits>
 #include <string>
 
 using namespace std;
@@ -48,64 +46,33 @@ Evaluate: 		Determine time & space efficiency of solution
 
 //Function prototype
 int dealer();
-void inputCheck(char*);
+unsigned long long int inputToInt(int&);
 
-const int LENGTH = 11;
 const int MAXVALUE = 10;
 const int MINVALUE = 1;
 
 int main() {
 
+    int nullString = 0;
+    unsigned long long int seed = inputToInt(nullString);  
 
-    char seed[LENGTH] = "";    // Cannot be single quote
-    // char* seed = nullptr;    // Same thing, just dynamic allocation
-    // seed = new char[LENGTH];
-
-    printf("Input integer for seeded randomizer or press enter for non-deterministic randomizer (10-digit max): ");
-    
-    inputCheck(seed);  
-
-    if (strcmp(seed, "") == 0)
-        cout << "Empty!" << endl;
-
-    printf("String: %s \n", seed);
-
-    unsigned int seedling;
-
-    // No null char, only strings
-    if (strcmp(seed, "") == 0) {
-        seedling = strtoul(seed, NULL, LENGTH);
-        srand(seedling);    
-    }      
+    // srand is seeded globally
+    if (nullString)
+        srand(time(0)); 
     else
-        srand(time(0));
+        srand(seed);
 
-    printf("Integer: %u: \n", seedling);
-    // cout << seedling << endl;
-    cout << rand() << endl;
-
-
-    int y;
-
-    // Limits the range of the random number.
-    while (0) {
-        cin.get();
-        // y = (rand() % (MAXVALUE - MINVALUE + 1)) + MINVALUE;
-        y = dealer();
-        cout << y;
-    }
 
     
     int total = 0;
+    int firstCard;
     int currentCard;
-    int previousCard;
 
+    firstCard = dealer();
     currentCard = dealer();
-    previousCard = currentCard;
-    currentCard = dealer();
-    total = currentCard + previousCard;
+    total = firstCard + currentCard;
     
-    printf("First cards: %d, %d\n", currentCard, previousCard);
+    printf("First cards: %d, %d\n", firstCard, currentCard);
     printf("Total: %d\n", total);
 
     // do {
@@ -114,8 +81,6 @@ int main() {
     // }
     // while()
 
-    // delete [] seed;  // Also needed for dynamic alloca
-	// seed = nullptr;
 
     return 0;
 
@@ -124,37 +89,45 @@ int main() {
 
 
 
-
-void inputCheck(char* seed) {
-
-    // char* seed[LENGTH];
-    for (;;){
-
-        cin.get(seed, LENGTH, '\n');//Leaves \n in buffer for ignore
-        cin.clear();  // Clears error flags
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        
-        int checkInt = 1;
-        for (int i = 0; i < LENGTH; i++) {
-            if (!(isdigit(seed[i]) || seed[i] == '\0')) {
-                printf("%c is not an integer. ", seed[i]);
-                checkInt = 0;
-            }
-        }
-        if (checkInt){
-            break;
-        }
-        else {
-            cout << "Please input a valid positive integer: ";
-            for (int j=0; j<LENGTH; j++) {
-                seed[j] = '\0';  // Double quotes are strings, not char
-            }
-        }   
-    }
+int dealer() {
+    return (rand() % (MAXVALUE - MINVALUE + 1)) + MINVALUE;
 }
 
 
+unsigned long long int inputToInt(int &nullString) {
 
-int dealer() {
-    return (rand() % (MAXVALUE - MINVALUE + 1)) + MINVALUE;
+    unsigned long long int output = 0;
+    string userStr = "";
+
+    printf("Input one of the following options:\n\t• Input integer for seeded randomizer (19-digit max)\n\t• Press [enter] for non-deterministic randomizer: ");    
+
+    for (;;){
+
+        userStr = "";
+        getline(cin, userStr); 
+        cin.clear();
+
+        if (userStr.compare("") == 0) {
+            userStr = "0";
+            nullString = 1;
+            break; 
+        }      
+        else {
+            int checkInt = 1;
+            for (int i = 0; i < userStr.length(); i++) {
+                if (!(isdigit(userStr[i]) || userStr[i] == '\0')) {
+                    printf("%c is not an integer. ", userStr[i]);
+                    checkInt = 0;
+                }
+            }
+            if (checkInt){
+                break;
+            }
+            else {
+                cout << "Please input a valid positive integer: ";
+            }  
+        } 
+    }
+    output = stoull(userStr, nullptr, 10);
+    return output;
 }
