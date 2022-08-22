@@ -26,18 +26,31 @@ string Dealer::draw(int &total) {
                 printf("No more %ds!\n", newCard);
             }
         } while(maxCard == 1);
+
+        if (newCard == 1) {
+            ace = 1;
+        }
         if (newCard > 10)
             total += 10;
-        else
-            total += newCard;
-        if (newCard < 2 || newCard > 10) {
-            show = display[newCard];
+        else if (newCard == 1) {
+            total += 11;
         }
         else
-            show = to_string(newCard);
-        countCards--;
-        return show;
+            total += newCard;
+        if (ace == 1 && total > 21) {
+            total -= 10;
+            ace = 0; 
+        }
+    
+    if (newCard < 2 || newCard > 10) {
+        show = display[newCard];
+    }
+    else
+        show = to_string(newCard);
+    countCards--;
+    return show;
     }
 }
 
 }
+

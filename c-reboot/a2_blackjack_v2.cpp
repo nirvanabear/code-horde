@@ -70,6 +70,7 @@ int main() {
     int total = 0;
     string firstCard;
     string currentCard;
+    int blackjack = 0;
 
     firstCard = pokerAlice.draw(total);
     currentCard = pokerAlice.draw(total);
@@ -77,8 +78,14 @@ int main() {
     printf("First cards: %s, %s\n", firstCard.c_str(), currentCard.c_str());
     printf("Total: %d\n", total);
 
+    if (total == 21) {
+        blackjack = 1;
+        cout << "Blackjack!" << endl;
+    }
+
     string deal;
     int counter = 0;
+    int bust = 0;
     do {
         if (counter) {
             currentCard = pokerAlice.draw(total);
@@ -87,11 +94,12 @@ int main() {
         }
 
         if (total == 21) {
-            cout << "Congratulations!" << endl;
+            cout << "Vingt-et-Un!" << endl;
             break;
         }
         else if (total > 21) {
             cout << "Bust!" << endl;
+            bust = 1;
             break;
         }
 
@@ -100,7 +108,60 @@ int main() {
     }
     while(deal == "y" || deal == "Y");
 
-    cout << "Game Over" << endl;
+
+
+    int dealerTotal = 0;
+    int dealerjack = 0;
+    int dealerBust = 0;
+    if (!bust) {
+
+        cout << endl << "Dealer's Turn: " << endl << endl;
+        cin.get();
+
+        firstCard = pokerAlice.draw(dealerTotal);
+        currentCard = pokerAlice.draw(dealerTotal);
+
+        printf("Dealer's first cards: %s, %s\n", firstCard.c_str(), currentCard.c_str());
+        printf("Dealer's total: %d\n\n", dealerTotal);
+        cin.get(); 
+
+        if (dealerTotal == 21) {
+            dealerjack = 1;
+        }   
+
+        while(dealerTotal < 17 && dealerTotal < total) {
+                currentCard = pokerAlice.draw(dealerTotal);
+                printf("Dealer's card: %s\n", currentCard.c_str());
+                printf("Dealer's total: %d\n\n", dealerTotal);
+                cin.get();
+
+        }
+        if (dealerTotal > 21) {
+            dealerBust = 1;
+            cout << "Dealer busts!" << endl;
+        }
+    }
+
+    if ((dealerTotal > total && !dealerBust) || bust) {
+        cout << "You Lose!" << endl;
+    }
+    else if (dealerTotal == total) {
+        if (blackjack && dealerjack) {
+            cout << "Blackjack standoff!" << endl;
+        }
+        else if (blackjack) {
+            cout << "Blackjack! You win!" << endl;
+        }
+        else if (dealerjack) {
+            cout << "Dealer's blackjack! You lose!" << endl;
+        }
+        else
+            cout << "Standoff!" << endl;
+    }
+    else
+        cout << "You win!" << endl;
+    
+    // TODO //  Bets and current winnings
 
     return 0;
 
