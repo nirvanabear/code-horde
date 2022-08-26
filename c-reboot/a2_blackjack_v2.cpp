@@ -47,13 +47,49 @@ Review: 		Make sure your code works, handle corner cases
 Evaluate: 		Determine time & space efficiency of solution
 */
 
-//Function prototype
-// int cardDeck(int&);
-unsigned long long int inputToInt(int&);
-string requestCard();
 
+    /* TODO //
+        functions for hands
+
+        Multiple rounds of hands
+
+        How many decks??
+        Burn card
+        Place bet
+        Deal one up to player
+        Deal one down to dealer
+        Deal one up to player
+        Deal one up to dealer
+        If dealer shows ace, 
+            insurance bet option
+            peek and if blackjack, everybody loses (excpt bjack)
+        Players hand
+            if blackjack, pay 3/2 bet
+            hit 
+                (cannot then split or double down)
+            stand
+            double down
+                only one more card then double the bet
+            surrender
+                forfeit but keep half the money
+            split
+                doubles bet
+                separate cards and deal a hand to first card
+                deal hand to second card
+                second split is possible
+        */
+
+
+// Constants
 const int MAXVALUE = 13;
 const int MINVALUE = 1;
+
+//Function prototype
+unsigned long long int inputToInt(int&);
+string yesOrNo(char*);
+void playersHand(int &, int &, int &, int &, Dealer &);
+void dealersHand(int &, int &, int &, int &, int, int, int, Dealer &);
+void outcomes(int, int, int, int, int, int);
 
 int main() {
 
@@ -67,108 +103,39 @@ int main() {
         srand(seed);
 
     Dealer pokerAlice;
-    int total = 0;
-    string firstCard;
-    string currentCard;
-    int blackjack = 0;
+    string keepPlaying;
 
-    firstCard = pokerAlice.draw(total);
-    currentCard = pokerAlice.draw(total);
-    
-    printf("First cards: %s, %s\n", firstCard.c_str(), currentCard.c_str());
-    printf("Total: %d\n", total);
+    cout << "￦" << endl;
 
-    if (total == 21) {
-        blackjack = 1;
-        cout << "Blackjack!" << endl;
-    }
 
-    string deal;
-    int counter = 0;
-    int bust = 0;
     do {
-        if (counter) {
-            currentCard = pokerAlice.draw(total);
-            printf("Card: %s\n", currentCard.c_str());
-            printf("Total: %d\n", total);
-        }
+        int playerWinnings = 0;
 
-        if (total == 21) {
-            cout << "Vingt-et-Un!" << endl;
-            break;
-        }
-        else if (total > 21) {
-            cout << "Bust!" << endl;
-            bust = 1;
-            break;
-        }
+        int total = 0;
+        int blackjack = 0;
+        int bust = 0;
+        int bet = 0;
 
-        deal = requestCard();
-        counter++;
-    }
-    while(deal == "y" || deal == "Y");
+        playersHand(total, blackjack, bust, bet, pokerAlice);
 
 
+        int dealerTotal = 0;
+        int dealerBJack = 0;
+        int dealerBust = 0;
 
-    int dealerTotal = 0;
-    int dealerjack = 0;
-    int dealerBust = 0;
-    if (!bust) {
+        dealersHand(dealerTotal, dealerBJack, dealerBust, bet, bust, blackjack, total, pokerAlice);
 
-        cout << endl << "Dealer's Turn: " << endl << endl;
-        cin.get();
+        outcomes(total, dealerTotal, bust, dealerBust, blackjack, dealerBJack);
 
-        firstCard = pokerAlice.draw(dealerTotal);
-        currentCard = pokerAlice.draw(dealerTotal);
+        char anotherHand[] = "Do you want to play again?";
+        keepPlaying = yesOrNo(anotherHand);
 
-        printf("Dealer's first cards: %s, %s\n", firstCard.c_str(), currentCard.c_str());
-        printf("Dealer's total: %d\n\n", dealerTotal);
-        cin.get(); 
+    } while(keepPlaying == "y" || keepPlaying == "Y" || pokerAlice.deckCount() <= 0);
 
-        if (dealerTotal == 21) {
-            dealerjack = 1;
-        }   
-
-        while(dealerTotal < 17 && dealerTotal < total) {
-                currentCard = pokerAlice.draw(dealerTotal);
-                printf("Dealer's card: %s\n", currentCard.c_str());
-                printf("Dealer's total: %d\n\n", dealerTotal);
-                cin.get();
-
-        }
-        if (dealerTotal > 21) {
-            dealerBust = 1;
-            cout << "Dealer busts!" << endl;
-        }
-    }
-
-    if ((dealerTotal > total && !dealerBust) || bust) {
-        cout << "You Lose!" << endl;
-    }
-    else if (dealerTotal == total) {
-        if (blackjack && dealerjack) {
-            cout << "Blackjack standoff!" << endl;
-        }
-        else if (blackjack) {
-            cout << "Blackjack! You win!" << endl;
-        }
-        else if (dealerjack) {
-            cout << "Dealer's blackjack! You lose!" << endl;
-        }
-        else
-            cout << "Standoff!" << endl;
-    }
-    else
-        cout << "You win!" << endl;
-    
-    // TODO //  Bets and current winnings
+    cout << "￦" << endl;
 
     return 0;
-
 }
-
-
-
 
 
 
@@ -219,35 +186,126 @@ unsigned long long int inputToInt(int &nullString) {
 }
 
 
-// int cardDeck(int &total) {
-//     int newCard;
-//     int maxCard = 0;
-//     // Requires g++ -std=c++11 a2_sndbx.cpp
-//     map<int, int> deck = {{1,0}, {2,0}, {3,0}, {4,0}, {5,0}, {6,0}, {7,0}, {8,0}, {9,0}, {10,0}, {11,0}, {12,0}, {13,0}};
-//     do {
-//         newCard = (rand() % (MAXVALUE - MINVALUE + 1)) + MINVALUE;
-//         if (deck[newCard] > 4)
-//             maxCard = 1;
-//     } while(maxCard == 0);
-//     total += newCard;
-//     return newCard;
-// }
-
-
-string requestCard() {
-    string deal;
+string yesOrNo(char* query) {
+    string response;
     int valid = 0;
     while (valid == 0) {
-        printf("Do you want another card? (y/n): ");
-        cin >> deal;
-        if (deal[0] == 'y' || deal[0] == 'Y' || deal[0] =='N' || deal[0] == 'n') {
-            if (deal.size() == 1)
+        printf("%s (y/n): ", query);
+        cin >> response;
+        if (response[0] == 'y' || response[0] == 'Y' || response[0] =='N' || response[0] == 'n') {
+            if (response.size() == 1)
                 valid = 1;
             }
-        if (deal == "n")
+        if (response == "n")
             break;
     }
-    return deal;
+    return response;
 }
 
 
+void playersHand(int &total, int &blackjack, int &bust, int &bet, Dealer &pokerAlice) {
+
+    total = 0;
+    blackjack = 0;
+    bust = 0;
+    bet = 0;
+
+    string firstCard;
+    string currentCard;
+
+    firstCard = pokerAlice.draw(total);
+    currentCard = pokerAlice.draw(total);
+    
+    printf("First cards: %s, %s\n", firstCard.c_str(), currentCard.c_str());
+    printf("Total: %d\n", total);
+
+    if (total == 21) {
+        blackjack = 1;
+        cout << "Blackjack!" << endl;
+    }
+
+    string deal;
+    int counter = 0;
+
+    do {
+        if (counter) {
+            currentCard = pokerAlice.draw(total);
+            printf("Card: %s\n", currentCard.c_str());
+            printf("Total: %d\n", total);
+        }
+
+        if (total == 21) {
+            cout << "Vingt-et-Un!" << endl;
+            break;
+        }
+        else if (total > 21) {
+            cout << "Bust!" << endl;
+            bust = 1;
+            break;
+        }
+
+        char anotherCard[] = "Do you want another card?";
+        deal = yesOrNo(anotherCard);
+        counter++;
+    }
+    while(deal == "y" || deal == "Y");
+
+}
+
+
+void dealersHand(int &dealerTotal, int &dealerBJack, int &dealerBust, int &bet, int bust, int blackjack, int total, Dealer &pokerAlice) {
+
+    string firstCard;
+    string currentCard;
+
+    if (!bust) {
+
+        cout << endl << "Dealer's Turn: " << endl << endl;
+        cin.get();
+
+        firstCard = pokerAlice.draw(dealerTotal);
+        currentCard = pokerAlice.draw(dealerTotal);
+
+        printf("Dealer's first cards: %s, %s\n", firstCard.c_str(), currentCard.c_str());
+        printf("Dealer's total: %d\n", dealerTotal);
+        cin.get(); 
+
+        if (dealerTotal == 21) {
+            dealerBJack = 1;
+        }   
+
+        while(dealerTotal < 17 && dealerTotal < total) {
+                currentCard = pokerAlice.draw(dealerTotal);
+                printf("Dealer's card: %s\n", currentCard.c_str());
+                printf("Dealer's total: %d\n\n", dealerTotal);
+                cin.get();
+
+        }
+        if (dealerTotal > 21) {
+            dealerBust = 1;
+            cout << "Dealer busts!" << endl;
+        }
+    }
+}
+
+
+void outcomes(int total, int dealerTotal, int bust, int dealerBust, int blackjack, int dealerBJack) {
+    if ((dealerTotal > total && !dealerBust) || bust) {
+        cout << "You Lose!" << endl;
+    }
+    else if (dealerTotal == total) {
+        if (blackjack && dealerBJack) {
+            cout << "Blackjack standoff!" << endl;
+        }
+        else if (blackjack) {
+            cout << "Blackjack! You win!" << endl;
+        }
+        else if (dealerBJack) {
+            cout << "Dealer's blackjack! You lose!" << endl;
+        }
+        else
+            cout << "Standoff!" << endl;
+    }
+    else
+        cout << "You win!" << endl;
+}

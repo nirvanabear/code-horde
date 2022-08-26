@@ -52,5 +52,13 @@ string Dealer::draw(int &total) {
     }
 }
 
+
+int Dealer::deckCount() {
+    return countCards;
 }
+
+
+
+} // End of namespace Dealer.
+
 

@@ -32,6 +32,7 @@ class Dealer {
         map<int, string> display = {{1, "A"}, {11, "J"}, {12, "Q"}, {13, "K"}};
     public:
         string draw(int&);
+        int deckCount();
 };
 
 }
