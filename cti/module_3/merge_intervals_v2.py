@@ -109,8 +109,12 @@ if __name__ == "__main__":
     # print(naive_merge_pairs(laurene))
     # print(naive_merge_pairs(camille))
 
-    # marion = [[1,3],[2,5],[2,4],[7,9],[6,8]]
+    marion = [[1,3],[2,5],[2,4],[7,9],[6,8]]
     # marion.sort()
     # print(marion)
+
+    marion.sort(key=lambda item: item[0])
+    print(marion)
+
 
     print(sorted_merge_intervals(laurene))
