@@ -23,20 +23,26 @@ string Dealer::draw(int &total) {
             deck[newCard] += 1;
             if (deck[newCard] > 4) {
                 maxCard = 1;
-                printf("No more %ds!\n", newCard);
+                // printf("No more %ds!\n", newCard);
             }
         } while(maxCard == 1);
 
         if (newCard == 1) {
             ace = 1;
+            cout << "Ace" << endl;
         }
-        if (newCard > 10)
+        if (newCard > 10) {
+            // cout << "Card: " << newCard << endl;
             total += 10;
+            // cout << "New total: " << total << endl;
+        }
         else if (newCard == 1) {
             total += 11;
         }
-        else
+        else {
+            // cout << "1" << endl;
             total += newCard;
+        }
         if (ace == 1 && total > 21) {
             total -= 10;
             ace = 0; 
@@ -57,6 +63,9 @@ int Dealer::deckCount() {
     return countCards;
 }
 
+void Dealer::resetAce() {
+    ace = 0;
+}
 
 
 } // End of namespace Dealer.

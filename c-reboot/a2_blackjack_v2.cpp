@@ -85,32 +85,65 @@ const int MAXVALUE = 13;
 const int MINVALUE = 1;
 
 //Function prototype
-unsigned long long int inputToInt(int&);
+unsigned long long int inputToInt(int&, string);
 string yesOrNo(char*);
 void playersHand(int &, int &, int &, int &, Dealer &);
 void dealersHand(int &, int &, int &, int &, int, int, int, Dealer &);
-void outcomes(int, int, int, int, int, int);
+void outcomes(int, int, int, int, int, int, int, int &);
+
+// TODO // 
+    // Reimplement arguments into a single array.
+    // Deck is empty breaks the program.
+    /*
+    Problematic...
+        Dealer's Turn: 
+
+        Dealer's first cards: 3, K
+        Dealer's total: 13
+
+        Dealer's card: Q
+        Dealer's total: 13
+
+        Dealer's card: 9
+        Dealer's total: 22
+
+    Yet another problem:
+        Current total winnings: ￦-5
+        Do you want to play again? (y/n): y
+        Place your bets!
+        5
+        First cards: 8, A
+        Total: 19
+        Do you want another card? (y/n): n
+
+        Dealer's Turn: 
+
+        Dealer's first cards: A, 7
+        Dealer's total: 18
+
+        You win!
+        Current total winnings: ￦-5
+        Do you want to play again? (y/n): 
+    */
+
 
 int main() {
 
-    int nullString = 0;
-    unsigned long long int seed = inputToInt(nullString);  
+    int nullResponse = 0;
+    string introPrompt ="Input one of the following options:\n\t• Input integer for seeded randomizer (19-digit max)\n\t• Press [enter] for non-deterministic randomizer\nInput: ";
+    unsigned long long int seed = inputToInt(nullResponse, introPrompt);  
 
     // srand is seeded globally
-    if (nullString)
+    if (nullResponse)
         srand(time(0)); 
     else
         srand(seed);
 
     Dealer pokerAlice;
     string keepPlaying;
-
-    cout << "￦" << endl;
-
+    int playerWinnings = 0;
 
     do {
-        int playerWinnings = 0;
-
         int total = 0;
         int blackjack = 0;
         int bust = 0;
@@ -118,35 +151,45 @@ int main() {
 
         playersHand(total, blackjack, bust, bet, pokerAlice);
 
-
         int dealerTotal = 0;
         int dealerBJack = 0;
         int dealerBust = 0;
 
         dealersHand(dealerTotal, dealerBJack, dealerBust, bet, bust, blackjack, total, pokerAlice);
 
-        outcomes(total, dealerTotal, bust, dealerBust, blackjack, dealerBJack);
+        outcomes(total, dealerTotal, bust, dealerBust, blackjack, dealerBJack, bet, playerWinnings);
 
         char anotherHand[] = "Do you want to play again?";
         keepPlaying = yesOrNo(anotherHand);
 
-    } while(keepPlaying == "y" || keepPlaying == "Y" || pokerAlice.deckCount() <= 0);
+    } while(pokerAlice.deckCount() > 0 && (keepPlaying == "y" || keepPlaying == "Y"));
+    // TODO //  Messaging and game flow when deck is empty.
 
-    cout << "￦" << endl;
+    if (pokerAlice.deckCount() <= 0) {
+        printf("The deck is empty! Go home!\n");
+    }
+
+    if (playerWinnings > 0) {
+        printf("You've won ￦%d.\nCongratulations!\n", playerWinnings);
+    }
+    else if (playerWinnings < 0) {
+        printf("You've lost ￦%d.\nSorry, sucker.\n", playerWinnings);
+    }
+    else
+        printf("Hope you had fun!\n");
 
     return 0;
 }
 
 
 
-
-unsigned long long int inputToInt(int &nullString) {
+unsigned long long int inputToInt(int &nullResponse, string introPrompt = "Please input a valid positive integer or press [enter]: ") {
 
     unsigned long long int output = 0;
-    string userStr = "";
-    nullString = 0;
+    string userStr = ""; // Adapts to any size.
+    nullResponse = 0;
 
-    printf("Input one of the following options:\n\t• Input integer for seeded randomizer (19-digit max)\n\t• Press [enter] for non-deterministic randomizer\nInput: ");    
+    printf("%s\n", introPrompt.c_str());  
 
     for (;;){
 
@@ -156,7 +199,7 @@ unsigned long long int inputToInt(int &nullString) {
 
         if (userStr.compare("") == 0) {
             userStr = "0";
-            nullString = 1;
+            nullResponse = 1;
             break; 
         }      
         else {
@@ -179,7 +222,7 @@ unsigned long long int inputToInt(int &nullString) {
     char* userCstr = nullptr;
     userCstr = new char[userStr.size() + 1];
     strcpy(userCstr, userStr.c_str());
-    output = strtoull(userCstr, nullptr, 10); //Never throws exceptions
+    output = strtoull(userCstr, nullptr, 10); //Never throws exceptions.
     delete [] userCstr;
 
     return output;
@@ -192,6 +235,7 @@ string yesOrNo(char* query) {
     while (valid == 0) {
         printf("%s (y/n): ", query);
         cin >> response;
+        cin.ignore();
         if (response[0] == 'y' || response[0] == 'Y' || response[0] =='N' || response[0] == 'n') {
             if (response.size() == 1)
                 valid = 1;
@@ -205,10 +249,16 @@ string yesOrNo(char* query) {
 
 void playersHand(int &total, int &blackjack, int &bust, int &bet, Dealer &pokerAlice) {
 
+    int nullResponse = 0;
     total = 0;
     blackjack = 0;
     bust = 0;
     bet = 0;
+
+    pokerAlice.resetAce();
+
+    bet = inputToInt(nullResponse, "Place your bets!");
+    cout << "Bet: ￦" << bet << endl;
 
     string firstCard;
     string currentCard;
@@ -258,6 +308,8 @@ void dealersHand(int &dealerTotal, int &dealerBJack, int &dealerBust, int &bet, 
     string firstCard;
     string currentCard;
 
+    pokerAlice.resetAce();
+
     if (!bust) {
 
         cout << endl << "Dealer's Turn: " << endl << endl;
@@ -283,29 +335,42 @@ void dealersHand(int &dealerTotal, int &dealerBJack, int &dealerBust, int &bet, 
         }
         if (dealerTotal > 21) {
             dealerBust = 1;
-            cout << "Dealer busts!" << endl;
         }
     }
 }
 
 
-void outcomes(int total, int dealerTotal, int bust, int dealerBust, int blackjack, int dealerBJack) {
-    if ((dealerTotal > total && !dealerBust) || bust) {
-        cout << "You Lose!" << endl;
+void outcomes(int total, int dealerTotal, int bust, int dealerBust, int blackjack, int dealerBJack, int bet, int &playerWinnings) {
+    if (dealerBust == 1) {
+        cout << "Dealer busts!" << endl;
+        cout << "You win ￦" << bet << "!" << endl;
+        playerWinnings += bet;
+    }
+    else if ((dealerTotal > total && !dealerBust) || bust) {
+        cout << "You lose ￦" << bet << "!" << endl;
+        playerWinnings -= bet;
+        cout << "Winnings: " << playerWinnings << endl;
     }
     else if (dealerTotal == total) {
         if (blackjack && dealerBJack) {
             cout << "Blackjack standoff!" << endl;
         }
         else if (blackjack) {
-            cout << "Blackjack! You win!" << endl;
+            cout << "Blackjack! You win ￦" << bet << "!" << endl;
+            playerWinnings += bet;
         }
         else if (dealerBJack) {
-            cout << "Dealer's blackjack! You lose!" << endl;
+            cout << "Dealer's blackjack! You lose ￦" << bet << "!" << endl;
+            playerWinnings -= bet;
         }
         else
             cout << "Standoff!" << endl;
     }
-    else
-        cout << "You win!" << endl;
+    else {
+        cout << "You win ￦" << bet << "!" << endl;
+        playerWinnings += bet;
+    }
+    
+    printf("Current total winnings: ￦%d\n", playerWinnings);
 }
+
