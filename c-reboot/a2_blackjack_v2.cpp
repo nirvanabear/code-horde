@@ -144,6 +144,9 @@ int main() {
     int playerWinnings = 0;
 
     do {
+        int dealerTotal = 0;
+        pokerAlice.setDealerCards(dealerTotal);
+
         int total = 0;
         int blackjack = 0;
         int bust = 0;
@@ -151,13 +154,14 @@ int main() {
 
         playersHand(total, blackjack, bust, bet, pokerAlice);
 
-        int dealerTotal = 0;
         int dealerBJack = 0;
         int dealerBust = 0;
 
         dealersHand(dealerTotal, dealerBJack, dealerBust, bet, bust, blackjack, total, pokerAlice);
 
         outcomes(total, dealerTotal, bust, dealerBust, blackjack, dealerBJack, bet, playerWinnings);
+
+        pokerAlice.resetDealerCards();
 
         char anotherHand[] = "Do you want to play again?";
         keepPlaying = yesOrNo(anotherHand);
@@ -170,7 +174,7 @@ int main() {
     }
 
     if (playerWinnings > 0) {
-        printf("You've won ￦%d.\nCongratulations!\n", playerWinnings);
+        printf("\nYou've won ￦%d.\nCongratulations!\n", playerWinnings);
     }
     else if (playerWinnings < 0) {
         printf("You've lost ￦%d.\nSorry, sucker.\n", playerWinnings);
@@ -260,6 +264,9 @@ void playersHand(int &total, int &blackjack, int &bust, int &bet, Dealer &pokerA
     bet = inputToInt(nullResponse, "Place your bets!");
     cout << "Bet: ￦" << bet << endl;
 
+    cout << endl << "Dealer shows: " << pokerAlice.getDealerCard1() << ", ?" << endl << endl;
+
+
     string firstCard;
     string currentCard;
 
@@ -315,10 +322,10 @@ void dealersHand(int &dealerTotal, int &dealerBJack, int &dealerBust, int &bet, 
         cout << endl << "Dealer's Turn: " << endl << endl;
         cin.get();
 
-        firstCard = pokerAlice.draw(dealerTotal);
-        currentCard = pokerAlice.draw(dealerTotal);
+        // firstCard = pokerAlice.draw(dealerTotal);
+        // currentCard = pokerAlice.draw(dealerTotal);
 
-        printf("Dealer's first cards: %s, %s\n", firstCard.c_str(), currentCard.c_str());
+        printf("Dealer's first cards: %s, %s\n", pokerAlice.getDealerCard1().c_str(), pokerAlice.getDealerCard2().c_str());
         printf("Dealer's total: %d\n", dealerTotal);
         cin.get(); 
 
@@ -349,7 +356,7 @@ void outcomes(int total, int dealerTotal, int bust, int dealerBust, int blackjac
     else if ((dealerTotal > total && !dealerBust) || bust) {
         cout << "You lose ￦" << bet << "!" << endl;
         playerWinnings -= bet;
-        cout << "Winnings: " << playerWinnings << endl;
+        // cout << "Winnings: " << playerWinnings << endl;
     }
     else if (dealerTotal == total) {
         if (blackjack && dealerBJack) {
