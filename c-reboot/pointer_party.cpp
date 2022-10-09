@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
 
 int what() {
@@ -117,8 +119,15 @@ int main() {
 
     int *iptr = nullptr;
 
+    int five = 5;
+    string fiveStr = to_string(five);
+    const char* fiveChar = fiveStr.c_str();
+    cout << fiveChar << endl;
 
-
+    // Needs C++11 to properly initialize
+    // without .push_back()
+    // vector<int> nums;
+    // nums = {4,1,2,1,2};
 
     return 0;
 }
