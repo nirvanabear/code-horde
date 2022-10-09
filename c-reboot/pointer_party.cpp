@@ -1,3 +1,6 @@
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 using namespace std;
 
@@ -6,7 +9,7 @@ int what() {
 }
 
 int array_to_pointer(int* array, int k) {
-    prinff("Array pointers decay to basic pointers when used as an argument for a function.\n");
+    printf("Array pointers decay to basic pointers when used as an argument for a function.\n");
     printf("Location plus one returns the size of the int pointer which ends up being some multiple of 4 larger than the size of the array.\n");
     int* len = *(&array + 1);
     printf("Addresses are the same as some new location past the end of the array and array[0].\n");
@@ -18,6 +21,25 @@ int array_to_pointer(int* array, int k) {
     cout << num << endl;
     return 0;
 }
+
+
+/*
+	• Make sure that function returns pointer to an object that still exists after the function ends
+		¬ arrays or variables defined within a function are destroyed when it ends
+		¬ any pointer to such an array will have nothing to point to
+	• Pointers should be returned from functions that
+		¬ point to an item passed in as a function
+		¬ points to a dynamically allocated chunk of memory 
+			◊ this can be created inside the function
+			◊ memory remains allocated until delete is used, so it persists after a function ends */
+char *findNull(char *str)
+{
+    char *ptr = str;
+    while (*ptr != '\0')
+        ptr++;
+    return ptr;
+}
+
 
 int main() {
     what();
@@ -91,6 +113,12 @@ int main() {
     cout << *(&array2 + 1) << endl;  // 0x7ff7bea7f2fc
     cout << *(array2 + 1) << endl;   // 2
     printf("However, * casts address to an int* to be used in math with another int*, ie, the original array pointer.\n");
+
+
+    int *iptr = nullptr;
+
+
+
 
     return 0;
 }

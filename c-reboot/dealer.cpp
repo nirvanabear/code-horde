@@ -85,6 +85,6 @@ void Dealer::resetDealerCards() {
     dealerCard2 = "";
 }
 
-} // End of namespace Dealer.
+} // End of namespace dealer.
 
 
