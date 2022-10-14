@@ -128,19 +128,18 @@ void print_pascal(int** triangle, int n) {
     cout << endl;
 }
 
-// TODO // Still needs proper garbage collection.
-
-// void delete_row() {
-
-// }
-
-// void delete_table() {
-
-// }
+void delete_triangle(int** triangle, int n) {
+    for (int r=0; r<n; r++) {
+        delete [] triangle[r];
+        triangle[r] = nullptr;
+    }
+    delete [] triangle;
+    triangle = nullptr;
+}
 
 
 int main() {
-    int n = 5;
+    int n = 25;
     int** output = pascal_triangle(n);
     print_pascal(output, n);
     return 0;
