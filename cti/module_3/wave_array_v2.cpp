@@ -68,14 +68,15 @@ Approaches:
         once one index has run out, add rest of other vector to array
         return merged array
 
-            
+
+    (Optimized answer:
+        for even elements, starting with 0:
+            for > 0, if previous element is smaller, swap
+            for < last, if next element is smaller, swap )
 
 
 */
 
-// vector<int> wave_vector(vector<int> nums) {
-
-// }
 
 vector<int> merge(vector<int> v1, vector<int> v2) {
     int g = 0;
@@ -104,6 +105,7 @@ vector<int> merge(vector<int> v1, vector<int> v2) {
     return merge;
 }
 
+
 vector<int> merge_sort(vector<int> data) {
     vector<int> v1;
     vector<int> v2;
@@ -128,6 +130,25 @@ vector<int> merge_sort(vector<int> data) {
 }
 
 
+vector<int> wave_vector(vector<int> nums) {
+    vector<int> sorted = merge_sort(nums);
+    vector<int> wave;
+    int k = 0;
+    int m = sorted.size() - 1;
+    while (k < m) {
+        wave.push_back(sorted[m]);
+        wave.push_back(sorted[k]);
+        k++;
+        m--;
+    }
+    if (k == m) {
+        wave.push_back(sorted[k]);
+    }
+    return wave;
+}
+
+
+
 int main() {
 
     vector<int> v1 = {2,4,5,8};
@@ -146,6 +167,12 @@ int main() {
         cout << s << ", ";
     }
     cout << endl;
+
+    vector<int> waved = wave_vector(data1);
+    for (int t : waved) {
+        cout << t << ", ";
+    }
+    cout << endl;  
 
     return 0;
 }
