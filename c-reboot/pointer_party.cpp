@@ -42,9 +42,22 @@ char *findNull(char *str)
     return ptr;
 }
 
+int* returnArray(int array[]) {
+    for (int i=0; array[i]; i++) {
+        cout << array[i] << endl;
+    }
+    return array;
+}
+
 
 int main() {
     what();
+
+    char** list_of_lists1 = new char*[9];
+    // This notation requires C++11
+    // list_of_lists1[0] = new char[9] {'5','3','.','.','7','.','.','.','.'};
+    printf(R"(Howdy 'partner'.)");
+    
 
     int arr[] = {1,2,3,4,5,6,7};
     printf("Arrays that are in the scope they are defined in can use sizeof()\n");
@@ -128,6 +141,45 @@ int main() {
     // without .push_back()
     // vector<int> nums;
     // nums = {4,1,2,1,2};
+
+    cout << "Here's a pointer return with the for loop trick." << endl;
+    int* arrPtr = returnArray(arr);
+    cout << "for loop trick doesn't work for an int array" << endl;
+    for (int j=0; j<(sizeof(arr)/sizeof(int)); j++) {
+        cout << arrPtr[j] << ", ";
+    }
+    cout << "Only works for c-string with \\0 terminator." << endl;
+    cout << endl;
+
+    cout << "Array of Arrays" << endl;
+    int **arrayArray = new int*[3];
+    arrayArray[0] = new int[1];
+    arrayArray[1] = new int[2];
+    arrayArray[2] = new int[2];
+
+    arrayArray[0][0] = 1;
+    arrayArray[1][0] = 1;
+    arrayArray[1][1] = 1;
+    arrayArray[2][0] = 7;
+    cout << arrayArray[1][0] << arrayArray[1][1] << endl;
+
+    // Set an int* pointer equal to another int* pointer.
+    // Deallocate memory before reassigning.
+    delete [] arrayArray[0];
+    arrayArray[0] = arrPtr;
+    for (int k=0; k<(sizeof(arr)/sizeof(int)); k++) {
+        cout << arrayArray[0][k];
+    }
+    cout << endl;
+    cout << arrayArray[2][1] << endl;
+
+    cout << "Indexing and indirection operator (below) access the value.
+    " << endl;
+    *(*(arrayArray + 2)+ 1) = 8;
+    cout << arrayArray[2][1] << endl;
+    delete [] arrayArray[2];
+    *(arrayArray + 2) = arrPtr;
+    cout << arrayArray[2][1] << endl;
 
     return 0;
 }

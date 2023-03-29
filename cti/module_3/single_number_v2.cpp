@@ -55,7 +55,7 @@ int main() {
     int size = sizeof(nums) / sizeof(int);
 
     // Solution 1: Hash table
-    int tableSize = size + (size / 3 + 1);
+    int tableSize = size + (size / 3 + 1);  // 30% larger than n
     HashTable* hashTable = ht_create(tableSize);
     for (int i=0; i<size; i++) {
         string temp = to_string(nums[i]);

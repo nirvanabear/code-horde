@@ -16,4 +16,6 @@ def pascal_triangle(n):
         return list_of_lists 
 
 if __name__ == "__main__":
-    print(pascal_triangle(5))
+    print(pascal_triangle(1))
+    print(pascal_triangle(2))
+    print(pascal_triangle(3))
